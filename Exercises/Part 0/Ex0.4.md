@@ -33,7 +33,7 @@ sequenceDiagram
     user->>browser: Manipulate the browser, write a note and click ‘Save’.
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
-    server-->>browser: Returns response with call to server to get all notes.
+    server-->>browser: Returns response with call to server to get all notes: Location: /exampleapp/notes
     deactivate server
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate server
