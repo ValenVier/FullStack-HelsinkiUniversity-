@@ -25,7 +25,7 @@ sequenceDiagram
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
     activate server
-    server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
+    server-->>browser: [{"content":"as","date":"2025-02-09T05:41:39.524Z"}, ... ]
     deactivate server
 
     Note right of browser: The browser executes the callback function that renders the notes
@@ -54,7 +54,7 @@ sequenceDiagram
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
     activate server
-    server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
+    server-->>browser: [{"content":"as","date":"2025-02-09T05:41:39.524Z"}, ... ]
     deactivate server
 
     Note right of browser: The browser executes the callback function that renders the notes
