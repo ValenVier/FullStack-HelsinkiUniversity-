@@ -31,7 +31,6 @@ sequenceDiagram
     Note right of browser: The browser executes the callback function that renders the notes
 
     user->>browser: Manipulate the browser, write a note and click ‘Save’.
-    activate browser
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
     server-->>browser: Returns response with call to server to get all notes.
