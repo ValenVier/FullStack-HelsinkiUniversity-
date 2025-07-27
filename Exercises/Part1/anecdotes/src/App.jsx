@@ -1,10 +1,32 @@
 import { useState } from 'react'
 
-const Button = ({text, onClick}) => (
+const Button = ({ text, onClick }) => (
   <button onClick={onClick}>
     {text}
   </button>
 )
+
+const Anecdote = ({ points, anecdotes }) => {
+
+  const highestValue = Math.max(...points);
+  const index = points.findIndex((value) => value === highestValue);
+  //console.log(index)
+
+  if (highestValue === 0) {
+    return (
+      <div>
+        <h2>No anecdotes with votes</h2>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <h2>Anecdote with most votes</h2>
+      <p>{anecdotes[index]}</p>
+    </div>
+  )
+}
 
 const App = () => {
   const anecdotes = [
@@ -41,6 +63,7 @@ const App = () => {
       <p>This anecdote has {points[selected]} votes.</p>
       <Button text="Vote" onClick={setNewPoint} />
       <Button text="Next Anecdote" onClick={setRandomAnecdote} />
+      <Anecdote points={points} anecdotes={anecdotes} />
     </div>
   )
 }
