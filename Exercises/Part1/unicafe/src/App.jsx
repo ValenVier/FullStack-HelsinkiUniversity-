@@ -19,19 +19,23 @@ const Statistics = ({ good, neutral, bad, total }) => {
   return (
     <div>
       <h2>Statistics</h2>
-      <StatisticLine text="Good" value={good} />
-      <StatisticLine text="Neutral" value={neutral} />
-      <StatisticLine text="Bad" value={bad} />
-      <StatisticLine text="All" value={total} />
-      <StatisticLine text="Average" value={(good - bad) / total} />
-      <StatisticLine text="Positive" value={((good / total) * 100) + ' %'} />
-    </div>
+      <table>
+        <tbody>
+        <StatisticLine text="Good" value={good} />
+        <StatisticLine text="Neutral" value={neutral} />
+        <StatisticLine text="Bad" value={bad} />
+        <StatisticLine text="All" value={total} />
+        <StatisticLine text="Average" value={((good - bad) / total).toFixed(1)} />
+        <StatisticLine text="Positive" value={((good / total).toFixed(3) * 100) + ' %'} />
+      </tbody>
+    </table>
+    </div >
   )
 }
 
-const StatisticLine = ({text, value}) => (
+const StatisticLine = ({ text, value }) => (
   //console.log(text, value)
-  <p>{text} {value}</p>
+  <tr><td>{text}</td><td>{value}</td></tr>
 )
 
 const App = () => {
