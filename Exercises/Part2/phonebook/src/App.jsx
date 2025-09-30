@@ -23,6 +23,7 @@ const App = () => {
   }, []) //Empty array as dependency = runs only when mounting the component
 
   const [successMessage, setSuccessMessage] = useState(null)
+  const [notification, setNotification] = useState(null)
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -66,10 +67,13 @@ const App = () => {
           setNewNumber('')
 
           // Show notification
-          setSuccessMessage(`Added: ${returnedPerson.name}`)
-          setTimeout(() => {
-            setSuccessMessage(null)
-          }, 5000)
+          setNotification({ text: `Added: ${returnedPerson.name}`, type: 'success' })
+          setTimeout(() => setNotification(null), 5000)
+        })
+        .catch(error => {
+          setNotification({ text: `Information of ${existing.name} has already been removed from server`, type: 'error' })
+          setTimeout(() => setNotification(null), 5000)
+          setPersons(persons.filter(p => p.id !== existing.id))
         })
     }
 
@@ -78,9 +82,17 @@ const App = () => {
   const deletePerson = (id) => {
     const person = persons.find(p => p.id === id)
     if (window.confirm(`Delete ${person.name}?`)) {
-      personsService.remove(id).then(() => {
-        setPersons(persons.filter(p => p.id !== id))
-      })
+      personsService.remove(id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+          setNotification({ text: `Deleted: ${person.name}`, type: 'success' })
+          setTimeout(() => setNotification(null), 5000)
+        })
+        .catch(error => {
+          setNotification({ text: `Information of ${person.name} was already removed from server`, type: 'error' })
+          setTimeout(() => setNotification(null), 5000)
+          setPersons(persons.filter(p => p.id !== id))
+        })
     }
   }
 
@@ -104,7 +116,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={notification} />
       <Filter value={filter} onChange={handleFilter} />
       <h3>Add a new</h3>
       <NewPersonForm
