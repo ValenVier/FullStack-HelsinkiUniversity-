@@ -4,6 +4,8 @@ import NewPersonForm from './components/NewPersonForm'
 import PeopleList from './components/PeopleList'
 import personsService from './services/persons'
 import axios from 'axios'
+import Notification from './components/Notification'
+import './styles/index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([]) //empty at the beginning
@@ -20,6 +22,8 @@ const App = () => {
       })
   }, []) //Empty array as dependency = runs only when mounting the component
 
+  const [successMessage, setSuccessMessage] = useState(null)
+
   const addPerson = (event) => {
     event.preventDefault()
 
@@ -29,11 +33,11 @@ const App = () => {
       return
     } */
 
-      /* const personObject = {
-      name: newName,
-      number: newNumber,
-      //id: persons.length + 1 //server generate the id
-    } */
+    /* const personObject = {
+    name: newName,
+    number: newNumber,
+    //id: persons.length + 1 //server generate the id
+  } */
 
     const existing = persons.find(p => p.name === newName)
     if (existing) {
@@ -60,6 +64,12 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+
+          // Show notification
+          setSuccessMessage(`Added: ${returnedPerson.name}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
     }
 
@@ -94,6 +104,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
       <Filter value={filter} onChange={handleFilter} />
       <h3>Add a new</h3>
       <NewPersonForm
