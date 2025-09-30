@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import NewPersonForm from './components/NewPersonForm'
 import PeopleList from './components/PeopleList'
+import personsService from './services/persons'
 import axios from 'axios'
 
 const App = () => {
@@ -10,7 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
-  //useEffect to load data from the server
+  //useEffect: load data from the server
   useEffect(() => {
     axios
       .get('http://localhost:3001/persons')
@@ -34,13 +35,22 @@ const App = () => {
       /* id: persons.length + 1 // Simple ID generation */ //server generate the id
     }
 
-    axios
-      .post('http://localhost:3001/persons', personObject)
-      .then(response => {
-        setPersons(persons.concat(response.data))
+    personsService
+      .create(personObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
       })
+  }
+
+  const deletePerson = (id) => {
+    const person = persons.find(p => p.id === id)
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personsService.remove(id).then(() => {
+        setPersons(persons.filter(p => p.id !== id))
+      })
+    }
   }
 
   const handleNameChange = (event) => {
@@ -73,7 +83,7 @@ const App = () => {
         onNumberChange={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <PeopleList persons={personsToShow} />
+      <PeopleList persons={personsToShow} onDelete={deletePerson} />
     </div>
   )
 }
