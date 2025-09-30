@@ -4,6 +4,7 @@ import axios from 'axios'
 const App = () => {
   const [countries, setCountries] = useState([])
   const [filter, setFilter] = useState('')
+  const [selectedCountry, setSelectedCountry] = useState(null)
 
   useEffect(() => {
     axios
@@ -19,33 +20,41 @@ const App = () => {
     c.name.common.toLowerCase().includes(filter.toLowerCase())
   )
 
+  const handleShow = (country) => {
+    setSelectedCountry(country)
+  }
+
+  let display = "";
+
+  if (selectedCountry) {
+    display = (
+      <div>
+        <h2>{selectedCountry.name.common}</h2>
+        <div>capital {selectedCountry.capital}</div>
+        <div>area {selectedCountry.area}</div>
+        <h3>languages:</h3>
+        <ul>
+          {Object.values(selectedCountry.languages).map(lang =>
+            <li key={lang}>{lang}</li>
+          )}
+        </ul>
+        <img src={selectedCountry.flags.png} alt="flag" width="150" />
+      </div>
+    )
+  } else if (countriesToShow.length > 10) {
+    display = 'Too many matches, specify another filter'
+  } else {
+    display = countriesToShow.map(c => (
+      <div key={c.cca3}>
+        {c.name.common} <button onClick={() => handleShow(c)}>show</button>
+      </div>
+    ))
+  }
+
   return (
     <div>
       find countries <input value={filter} onChange={handleFilter} />
-      <div>
-        {
-          countriesToShow.length === 1
-            ? (
-              <div>
-                <h2>{countriesToShow[0].name.common}</h2>
-                <div>Capital: {countriesToShow[0].capital}</div>
-                <div>Area: {countriesToShow[0].area}</div>
-                <h3>Languages:</h3>
-                <ul>
-                  {Object.values(countriesToShow[0].languages).map(lang =>
-                    <li key={lang}>{lang}</li>
-                  )}
-                </ul>
-                <img src={countriesToShow[0].flags.png} alt="flag" width="150" />
-              </div>
-            )
-            : countriesToShow.length > 10
-              ? 'Too many matches, specify another filter'
-              : countriesToShow.map(c => (
-                <div key={c.cca3}>{c.name.common}</div>
-              ))
-        }
-      </div>
+      {display}
     </div>
   )
 }
