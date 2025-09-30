@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+import Filter from './components/Filter'
+import CountryList from './components/CountryList'
+import Country from './components/Country'
+
 const App = () => {
   const [countries, setCountries] = useState([])
   const [filter, setFilter] = useState('')
@@ -14,46 +18,41 @@ const App = () => {
       })
   }, [])
 
-  const handleFilter = (event) => setFilter(event.target.value)
-
-  const countriesToShow = countries.filter(c =>
-    c.name.common.toLowerCase().includes(filter.toLowerCase())
-  )
+  const handleFilterChange = (event) => {
+    const newFilter = event.target.value
+    setFilter(newFilter)
+    setSelectedCountry(null)
+  }
 
   const handleShow = (country) => {
     setSelectedCountry(country)
   }
 
-  let display = "";
+  const countriesToShow = countries.filter(c =>
+    c.name.common.toLowerCase().includes(filter.toLowerCase())
+  )
+
+  // Auto-select if only one country matches
+  useEffect(() => {
+    if (countriesToShow.length === 1 && !selectedCountry) {
+      setSelectedCountry(countriesToShow[0])
+    }
+  }, [countriesToShow, selectedCountry])
+
+  let display = ""
 
   if (selectedCountry) {
-    display = (
-      <div>
-        <h2>{selectedCountry.name.common}</h2>
-        <div>capital {selectedCountry.capital}</div>
-        <div>area {selectedCountry.area}</div>
-        <h3>languages:</h3>
-        <ul>
-          {Object.values(selectedCountry.languages).map(lang =>
-            <li key={lang}>{lang}</li>
-          )}
-        </ul>
-        <img src={selectedCountry.flags.png} alt="flag" width="150" />
-      </div>
-    )
+    display = <Country country={selectedCountry} />
   } else if (countriesToShow.length > 10) {
     display = 'Too many matches, specify another filter'
   } else {
-    display = countriesToShow.map(c => (
-      <div key={c.cca3}>
-        {c.name.common} <button onClick={() => handleShow(c)}>show</button>
-      </div>
-    ))
+    display = <CountryList countries={countriesToShow} onShow={handleShow} />
   }
 
   return (
     <div>
-      find countries <input value={filter} onChange={handleFilter} />
+      <h1>Country Information</h1>
+      <Filter value={filter} onChange={handleFilterChange} />
       {display}
     </div>
   )
